@@ -18,6 +18,12 @@ public class PlayerGame : MonoBehaviour
 
     public Transform playerHead;
 
+    public bool jumping = false;
+
+    float jumptimer = 0;
+
+    public float maxJumpTime = 0.5f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,10 +49,21 @@ public class PlayerGame : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && controller.isGrounded)
         {
-            movement.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+           jumping = true;
+           jumptimer = 0;
+        }
+         
+        movement.y += gravity * Time.deltaTime *10;
+
+        if (Input.GetButton("Jump")&& jumping && jumptimer < maxJumpTime){
+            movement.y = Mathf.Sqrt(jumpHeight * -2f * gravity *jumptimer);
+            jumptimer += Time.deltaTime;
         }
 
-        movement.y += gravity * Time.deltaTime *10;
+        if (Input.GetButtonUp("Jump"))
+        {
+            jumping = false;
+        }
 
         controller.Move(movement * moveSpeed * Time.deltaTime);
         
